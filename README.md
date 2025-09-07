@@ -90,3 +90,6 @@ This repository contains Azure Infrastructure as Code (IaC) templates following 
 - State management
 
 Each deployment script in this repository implements these principles to ensure secure, maintainable, and production-ready infrastructure.
+
+Azure CLI conceptual article list
+https://learn.microsoft.com/en-us/cli/azure/reference-docs-index?view=azure-cli-latest

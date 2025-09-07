@@ -23,18 +23,18 @@ param environmentTag string = 'Development'
 param locationTag string = 'Canada Central'
 
 @description('Required tag for Owner')
-param ownerTag string = 'christophergovenderkubiec@gmail.com'
+param ownerTag string = '<>'
 
 @description('Required tag for Project')
 param projectTag string = 'Azure-Learning'
 
 // Reference to existing web app
-resource webApp 'Microsoft.Web/sites@2022-03-01' existing = {
+resource webApp 'Microsoft.Web/sites@2024-11-01' existing = {
   name: webAppName
 }
 
 // Create deployment slot
-resource slot 'Microsoft.Web/sites/slots@2022-03-01' = {
+resource slot 'Microsoft.Web/sites/slots@2024-11-01' = {
   parent: webApp
   name: slotName
   location: location
