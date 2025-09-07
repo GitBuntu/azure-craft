@@ -77,3 +77,4 @@ See `policy/create-az-policy-definition-04082025-v1.bicep` for:
 Functions → Storage Account → Log Analytics
 Storage → Log Analytics
 Policies → Subscription Level
+- Ensure dependencies are declared in Bicep files

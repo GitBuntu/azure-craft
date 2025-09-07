@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "policyName": {
+      "value": "require-resource-group-tags"
+    },
+    "displayName": {
+      "value": "Require Multiple Tags on Resource Groups"
+    },
+    "policyDescription": {
+      "value": "This policy ensures that all newly created or updated resource groups include a standardized set of governance tags. Specifically, it enforces the presence of the following tags: Compliance, CostCenter, DataSensitivity, Environment, Location, Owner, and Project. This helps maintain consistent tagging for cost management, security classification, accountability, and compliance tracking across the subscription."
+    },
+    "version": {
+      "value": "1.0.0"
+    }
+  }
+}
