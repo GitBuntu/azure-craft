@@ -12,9 +12,23 @@
       "value": {}
     },
     "storageConfig": {
+      "value": {}
+    },
+    "kvConfig": {
       "value": {
-        "skuName": "Standard_LRS",
-        "accessTier": "Hot"
+        "objectId": "",
+        "keysPermissions": [
+          "list"
+        ],
+        "secretsPermissions": [
+          "get",
+          "set",
+          "list"
+        ],
+        "skuName": "standard",
+        "enabledForDeployment": false,
+        "enabledForDiskEncryption": false,
+        "enabledForTemplateDeployment": false
       }
     },
     "tags": {
@@ -23,7 +37,7 @@
         "CostCenter": "FIN-Azure-Learning",
         "DataSensitivity": "Low",
         "Environment": "Development",
-        "Location": "eastus",
+        "Location": "westus",
         "Owner": "Azure Learning Team",
         "Project": "Azure-Learning"
       }
