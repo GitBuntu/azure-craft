@@ -15,9 +15,14 @@ param (
 
 $timestamp = Get-Date -Format 'yyyyMMddHHmmss'
 $deploymentName = "$Resource-$timestamp"
-$resourceGroup = "rg-$Resource-$Environment-$Location-001"
-$templateFile = "../environments/$Environment/$Environment.bicep"
-$parametersFile = "../environments/$Environment/$Environment.parameters.json"
+$resourceGroup = "cgk-rg-$Resource-$Environment-$Location"
+$templateFile = "$PSScriptRoot/../../environments/$Environment/$Environment.bicep"
+$parametersFile = "$PSScriptRoot/../../environments/$Environment/$Environment.parameters.json"
+
+if (!(Test-Path $templateFile)) {
+    Write-Error "Template file not found: $templateFile"
+    exit 1
+}
 
 Write-Host "Running what-if for $Resource in $Environment..."
 az deployment group what-if `

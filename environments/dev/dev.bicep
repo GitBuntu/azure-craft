@@ -3,6 +3,7 @@ param tags object
 param clientName string
 param storageConfig object
 param slotsConfig object
+param kvConfig object
 
 module main '../../dev-main.bicep' = {
   params: {
@@ -11,6 +12,7 @@ module main '../../dev-main.bicep' = {
     clientName: clientName
     storageConfig: storageConfig
     slotsConfig: slotsConfig
+    kvConfig: kvConfig
   }
 }
 

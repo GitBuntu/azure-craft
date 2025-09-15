@@ -31,7 +31,7 @@ output storageAccountId string = empty(storageConfig) ? '' : storageAccount!.out
 output primaryLocation string = empty(storageConfig) ? '' : storageAccount!.outputs.primaryLocation
 
 // other modules here
-module functionApp './modules/slots/slot.bicep' = if (!empty(slotsConfig)) {
+module functionApp './modules/slot/slot.bicep' = if (!empty(slotsConfig)) {
   name: 'functionApp-${uniqueString(resourceGroup().id)}'
   params: {
     location: location
