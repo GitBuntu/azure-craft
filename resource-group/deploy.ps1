@@ -2,7 +2,7 @@ param (
     [Parameter(Mandatory = $true)]
     [string]$SubscriptionId,
 
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $true)] #cgk-rg-kv-dev-westus
     [string]$ResourceGroupName,
 
     [Parameter(Mandatory = $true)]

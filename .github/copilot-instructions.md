@@ -1,80 +1,71 @@
-# AI Agent Instructions for Azure-Craft
+# Copilot Instructions for `azure-craft`
 
-This repository contains Infrastructure as Code (IaC) templates for Azure resources with an emphasis on security, compliance, and best practices. Here's what you need to know to work effectively with this codebase:
+Welcome, AI coding agents! This guide summarizes the essential knowledge and conventions for being productive in the `azure-craft` codebase. Follow these project-specific instructions to maximize your effectiveness.
 
-## Project Structure & Architecture
-- `/functions/` - Azure Function App deployment templates
-- `/storage/` - Storage Account deployment templates
-- `/policy/` - Azure Policy definitions
-- Each Bicep template is self-contained and follows consistent patterns
+---
 
-## Core Patterns & Conventions
+## 1. Architecture Overview
 
-### Resource Naming & Tagging
-```bicep
-var tags = {
-  Compliance: 'ISO27001'
-  CostCenter: costCenter
-  DataSensitivity: dataSensitivity
-  Environment: environment
-  Location: location
-  Owner: defaultOwner
-  Project: 'Azure-Learning'
-}
-```
-- All resources require these standardized tags
-- Names follow `resource-type-name` pattern (e.g., `plan-functionappname`)
-- Use `uniqueString()` for globally unique resources
+- **Modular Bicep IaC**: Infrastructure is defined using Bicep modules under `/modules/` (e.g., `function/`, `key-vault/`, `sql/`, `storage-account/`). Each module encapsulates a specific Azure resource or pattern.
+- **Environment Separation**: Deployments are environment-specific, with `/environments/dev/` and `/environments/prod/` containing main Bicep entrypoints and parameter files. Use these to manage configuration drift and promote changes safely.
+- **Policy as Code**: Azure Policy definitions are managed in `/policy/`, with reusable modules (e.g., `require-tags/`) and a dedicated deployment script. Policies enforce tagging and compliance across resources.
+- **Pipelines**: CI/CD is orchestrated via Azure Pipelines (`/pipelines/azure-pipelines.yml`), supporting multi-stage deployments and infra validation.
 
-### Security Standards
-- TLS 1.2 minimum enforcement
-- HTTPS-only access
-- Disabled public blob access
-- System-assigned managed identities preferred
-- All storage encrypted at rest
-- Network rules default to deny (except Function Apps)
+---
 
-### Parameter Validation
-- Use `@allowed()` for enumerated values
-- Provide descriptive `@description()` for all parameters
-- Include min/max lengths for naming constraints
-- Default to production-grade settings
+## 2. Developer Workflows
 
-### Monitoring Setup
-Every deployable resource includes:
-- Log Analytics integration
-- Application Insights when applicable
-- Diagnostic settings with metrics and logs
-- Standard retention policies
+- **Infra Deployment**: Use `scripts/infra/deploy.ps1` for deploying Bicep templates. Pass environment and parameter file as arguments.
+  - Example: `pwsh ./scripts/infra/deploy.ps1 -Environment dev`
+- **Policy Deployment**: Deploy policies with `policy/deploy.ps1`.
+- **Resource Group Management**: Use `resource-group/deploy.ps1` for provisioning resource groups before infra deployment.
+- **Service Principals**: Scripts in `scripts/security/` automate creation and secure storage of service principals.
+- **Audit**: Use `scripts/audit/audit-service-principal.ps1` to review service principal permissions.
 
-## Common Operations
+---
 
-### Adding New Resources
-1. Follow existing templates as reference implementations
-2. Include all standard tags
-3. Implement diagnostic settings
-4. Define meaningful outputs
-5. Add parameter validation
+## 3. Project Conventions
 
-### Policy Management
-See `policy/create-az-policy-definition-04082025-v1.bicep` for:
-- Tag enforcement examples
-- Policy rule structure
-- Subscription-level deployment patterns
+- **Bicep Module Naming**: Modules are named by resource type (e.g., `create-function-app.bicep`, `key-vault.bicep`). Parameters and outputs are explicitly defined for composability.
+- **Parameterization**: All environment-specific values are passed via `.bicepparam` or `.parameters.json` files in `/environments/`.
+- **No Hardcoded Secrets**: Secrets are referenced from Azure Key Vault, never stored in code or parameters.
+- **Tagging**: All resources must comply with tag policies enforced by `/policy/require-tags/`.
+- **Pipelines**: Only modify `/pipelines/azure-pipelines.yml` for CI/CD changes; do not duplicate pipeline logic elsewhere.
 
-## Key Integration Points
-- Storage accounts are configured for integration with Azure Services
-- Function Apps connect to storage via connection strings
-- Log Analytics serves as central logging
-- Application Insights for application monitoring
+---
 
-## Best Practices Implementation
-- See `functions/create-function-app.bicep` for comprehensive example
-- See `storage/create-storage-account.bicep` for security baseline
-- Reference `README.md` for full best practices checklist
+## 4. Integration Points
 
-## Resource Dependencies
-Functions → Storage Account → Log Analytics
-Storage → Log Analytics
-Policies → Subscription Level
-- Ensure dependencies are declared in Bicep files
+- **Azure Services**: The codebase provisions and configures Azure Functions, SQL, Storage, and Key Vault.
+- **Cross-Module Communication**: Outputs from one module (e.g., storage account connection string) are passed as parameters to dependent modules.
+- **External Scripts**: PowerShell scripts in `/scripts/` are the canonical way to interact with Azure resources outside of Bicep.
+
+---
+
+## 5. Key Files & Directories
+
+- `/modules/` — All reusable Bicep modules
+- `/environments/` — Environment-specific deployment entrypoints and parameters
+- `/policy/` — Policy definitions and deployment scripts
+- `/scripts/` — Automation scripts for infra, security, and auditing
+- `/pipelines/azure-pipelines.yml` — Main CI/CD pipeline definition
+- `README.md` — High-level project overview and getting started instructions
+
+---
+
+## 6. Examples
+
+- **Adding a New Resource**: Create a new Bicep module in `/modules/`, reference it in the appropriate environment main Bicep file, and update parameters as needed.
+- **Updating a Policy**: Modify the relevant Bicep in `/policy/require-tags/`, then redeploy using `policy/deploy.ps1`.
+
+---
+
+## 7. AI Agent Guidance
+
+- Always reference existing modules and scripts before introducing new patterns.
+- When in doubt, prefer parameterization and modularity.
+- Document any new conventions in `README.md` and update this file as needed.
+
+---
+
+If any section is unclear or missing critical information, please provide feedback so this guide can be improved!
