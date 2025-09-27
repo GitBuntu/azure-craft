@@ -3,9 +3,31 @@ trigger: none
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  - name: deploymentDefaultLocation
+    value: 'eastus'
+  - name: environmentName
+    value: 'prod' # Change to 'prod' for production deployments
+  - name: bicepFile
+    value: '$(System.DefaultWorkingDirectory)/environments/$(environmentName)/$(environmentName).bicep'
+  - name: parametersFile
+    value: '$(System.DefaultWorkingDirectory)/environments/$(environmentName)/$(environmentName).parameters.json'
+
 jobs:
-- job:
+- job: DeployBicep
+  displayName: 'Deploy Bicep Template'
   steps:
-  - script: echo Hello world!
-    displayName: 'Placeholder step'
-    
+    - task: AzureCLI@2
+      displayName: 'Deploy Bicep to Resource Group'
+      inputs:
+        azureSubscription: $(ServiceConnectionName)
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az --version
+          echo "Deploying Bicep file: $(bicepFile)"
+          az deployment group create \
+            --name $(Build.BuildNumber) \
+            --resource-group $(ResourceGroupName) \
+            --template-file $(bicepFile) \
+            --parameters @$(parametersFile)
