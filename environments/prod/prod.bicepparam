@@ -1,7 +1,7 @@
 using 'prod.bicep'
 
 param location = 'eastus'
-param clientName = 'fabrikam'
+param clientName = 'alien'
 
 param slotsConfig = {}
 param storageConfig = {
