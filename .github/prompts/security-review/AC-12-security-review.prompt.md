@@ -1,5 +1,5 @@
 
-# Security Review: [WorkItemID] - [Feature Title]
+# Security Review: AC-12 - Implement Azure Key Vault with Bicep
 
 ## Summary Verdict
 - [ ] **Approved**
@@ -8,11 +8,11 @@
 
 
 ## Metadata
-- **Work Item ID**: [WorkItemID]
-- **Feature**: [Short description]
-- **Reviewer**: [Your Name]
-- **Review Date**: [YYYY-MM-DD]
-- **Related Plan File**: [`/prompts/plan/vm.prompt.md`](../plan/vm.prompt.md)
+- **Work Item ID**: AC-12
+- **Feature**: Implement Azure Key Vault with Bicep
+- **Reviewer**: Christopher Govender
+- **Review Date**: 2025-09-28
+- **Related Plan File**: [`../plan/AC-12-plan/AC-12-plan.prompt.md`](../plan/AC-12-plan/AC-12-plan.prompt.md)
 
 ---
 
@@ -143,10 +143,8 @@
 
 ---
 
-**Reviewer**: [Your Name]  
-**Signature**: _Reviewed on [YYYY-MM-DD]_
-**Reviewer**: [Your Name]  
-**Signature**: _Reviewed on [YYYY-MM-DD]_
+**Reviewer**: Christopher Govender  
+**Signature**: _Reviewed on 2025-09-28_
 
 ---
 
