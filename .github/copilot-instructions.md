@@ -68,4 +68,18 @@ Welcome, AI coding agents! This guide summarizes the essential knowledge and con
 
 ---
 
+## 8. Documentation & Feedback
+
+### AC-12 Documentation Template
+
+For new infrastructure modules, follow the AC-12 Key Vault documentation template for DevOps Wiki and internal docs. This template demonstrates:
+- Clear parameter and output documentation using simple lists and bold/monospace formatting for readability.
+- Usage examples with Bicep module syntax.
+- Best practices, security, compliance, and troubleshooting guidance.
+- Reference links to Bicep, policy, and project instructions.
+
+**Template location:** `.github/prompts/documentation/AC-12-documentation/AC-12-documentation.md`
+
+Use this template as a model for documenting future modules to ensure clarity and consistency across the engineering team.
+
 If any section is unclear or missing critical information, please provide feedback so this guide can be improved!
