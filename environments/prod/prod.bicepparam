@@ -7,7 +7,7 @@ param slotsConfig = {}
 param storageConfig = {}
 
 param kvConfig = {
-  objectId: '06fec986-a2d5-4b17-92f1-5197146c9f29' // Managed Identity Object ID
+  objectId: '06fec986-a2d5-4b17-92f1-5197146c9f29'
   keysPermissions: [
     'list'
   ]
