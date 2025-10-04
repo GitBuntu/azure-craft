@@ -30,7 +30,6 @@ stages:
           echo "Generating parameters file from bicepparam..."
           az bicep build-params --file $(System.DefaultWorkingDirectory)/environments/$(environmentName)/$(environmentName).bicepparam --outfile $(parametersFile)
         displayName: 'Generate Parameters File'
-
       - task: AzureCLI@2
         name: ValidateARMTemplate
         inputs:
@@ -43,6 +42,9 @@ stages:
       - script: |
           echo "Validation completed successfully."
         displayName: 'Validation Success Message'
+      - script: |
+          echo "If validation failed, check the previous step's output for error details."
+        displayName: 'Validation Error Handling'
 
 - stage: RunPreflightValidations
   dependsOn: Validate
@@ -60,20 +62,70 @@ stages:
           resourceGroupName: $(ResourceGroupName)
           csmFile: $(bicepFile)
           csmParametersFile: $(parametersFile)
+        # Note: Ensure secrets are referenced from Key Vault, not stored in parameters
+
+- stage: Preview
+  dependsOn: RunPreflightValidations
+  jobs:
+    - job: PreviewAzureChanges
+      displayName: 'Preview Azure Changes'
+      steps:
+        - task: AzureCLI@2
+          name: PreviewWhatIf
+          inputs:
+            azureSubscription: $(ServiceConnectionName)
+            scriptType: bash
+            scriptLocation: inlineScript
+            inlineScript: |
+              echo "What-if deployment for Bicep file: $(bicepFile) with parameters: $(parametersFile)"
+              az deployment group what-if --resource-group $(ResourceGroupName) --template-file $(bicepFile) --parameters @$(parametersFile) > whatif-output.txt
+        - publish: whatif-output.txt
+          artifact: whatif-output
+          displayName: 'Publish What-if Output Artifact'
+        - script: |
+            echo "What-if analysis completed. Review the output above for changes."
+          displayName: 'What-if Analysis Completion Message'
+        - script: |
+            echo "If the what-if analysis indicates issues, review the previous step's output."
+          displayName: 'What-if Analysis Error Handling'
 
 - stage: Deploy
   dependsOn: RunPreflightValidations
   jobs:
-  - job: DeployInfrastructure
+  - deployment: DeployInfrastructure
     displayName: 'Deploy Infrastructure'
-    steps:
-      - task: AzureResourceManagerTemplateDeployment@3
-        name: DeployInfrastructure
-        displayName: 'Deploy Infrastructure'
-        inputs:
-          azureResourceManagerConnection: $(ServiceConnectionName)
-          resourceGroupName: $(ResourceGroupName)
-          location: $(deploymentDefaultLocation)
-          deploymentMode: Incremental
-          csmFile: $(bicepFile)
-          csmParametersFile: $(parametersFile)
+    environment: '$(environmentName)'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: self
+            - task: AzureResourceManagerTemplateDeployment@3
+              name: DeployInfrastructure
+              displayName: 'Deploy Infrastructure'
+              inputs:
+                azureResourceManagerConnection: $(ServiceConnectionName)
+                resourceGroupName: $(ResourceGroupName)
+                location: $(deploymentDefaultLocation)
+                deploymentMode: Incremental
+                csmFile: $(bicepFile)
+                csmParametersFile: $(parametersFile)
+            - task: AzureCLI@2
+              name: PostDeploymentValidation
+              displayName: 'Post-Deployment Resource Validation'
+              inputs:
+                azureSubscription: $(ServiceConnectionName)
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  echo "Validating Key Vault deployment..."
+                  az keyvault show --name $(clientName)-kv-$(ResourceGroupName | tr '[:upper:]' '[:lower:]') --resource-group $(ResourceGroupName)
+            - task: AzureCLI@2
+              name: DeploymentNotification
+              displayName: 'Notify Deployment Result'
+              inputs:
+                azureSubscription: $(ServiceConnectionName)
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  echo "Deployment completed for resource group $(ResourceGroupName)."

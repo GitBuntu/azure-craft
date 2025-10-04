@@ -8,6 +8,7 @@ param storageConfig object
 @description('Optional function configuration')
 param slotsConfig object
 
+@description('Key Vault configuration. For production, restrict access using RBAC and network ACLs as needed.')
 param kvConfig object
 
 var storageAccountName = toLower('${clientName}${uniqueString(resourceGroup().id)}')
