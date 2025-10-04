@@ -1,36 +1,71 @@
-trigger: 
-  branches:
-    include:
-      - dev
-
-pool:
-  vmImage: ubuntu-latest
-
 variables:
   - name: deploymentDefaultLocation
     value: 'eastus'
   - name: environmentName
-    value: 'prod' # Change to 'prod' for production deployments
+    value: 'prod'
   - name: bicepFile
     value: '$(System.DefaultWorkingDirectory)/environments/$(environmentName)/$(environmentName).bicep'
   - name: parametersFile
     value: '$(System.DefaultWorkingDirectory)/environments/$(environmentName)/$(environmentName).parameters.json'
 
-jobs:
-- job: DeployBicep
-  displayName: 'Deploy Bicep Template'
-  steps:
-    - task: AzureCLI@2
-      displayName: 'Deploy Bicep to Resource Group'
-      inputs:
-        azureSubscription: $(ServiceConnectionName)
-        scriptType: bash
-        scriptLocation: inlineScript
-        inlineScript: |
-          az --version
-          echo "Deploying Bicep file: $(bicepFile)"
-          az deployment group create \
-            --name $(Build.BuildNumber) \
-            --resource-group $(ResourceGroupName) \
-            --template-file $(bicepFile) \
-            --parameters @$(parametersFile)
+stages:
+
+- stage: Lint
+  jobs:
+  - job: LintCode
+    displayName: 'Lint Code'
+    steps:
+      - script: |
+          echo "Linting Bicep file: $(bicepFile)"
+          az bicep build --file $(bicepFile)
+        displayName: 'Lint Bicep File'
+
+- stage: Validate
+  dependsOn: Lint
+  jobs:
+  - job: ValidateBicepCode
+    displayName: 'Validate Bicep Code'
+    steps:
+      - script: |
+          echo "Generating parameters file from bicepparam..."
+          az bicep build-params --file $(System.DefaultWorkingDirectory)/environments/$(environmentName)/$(environmentName).bicepparam --outfile $(parametersFile)
+        displayName: 'Generate Parameters File'
+      - script: |
+          echo "Validating ARM Template for Bicep file: $(bicepFile) with parameters: $(parametersFile)"
+          az deployment sub validate --location $(deploymentDefaultLocation) --template-file $(bicepFile) --parameters @$(parametersFile)
+        displayName: 'Validate ARM Template'
+      - script: |
+          echo "Validation completed successfully."
+        displayName: 'Validation Success Message'
+
+- stage: RunPreflightValidations
+  dependsOn: Validate
+  jobs:
+  - job: PreflightValidations
+    displayName: 'Run Preflight Validations'
+    steps:
+      - task: AzureResourceManagerTemplateDeployment@3
+        name: RunPreflightValidations
+        displayName: 'Run Preflight Validations'
+        inputs:
+          connectedServiceName: $(ServiceConnectionName)
+          location: '$(deploymentDefaultLocation)'
+          deploymentMode: 'Validation'
+          csmParametersFile: $(parametersFile)
+
+- stage: Deploy
+  dependsOn: RunPreflightValidations
+  jobs:
+  - job: DeployInfrastructure
+    displayName: 'Deploy Infrastructure'
+    steps:
+      - task: AzureResourceManagerTemplateDeployment@3
+        name: DeployInfrastructure
+        displayName: 'Deploy Infrastructure'
+        inputs:
+          azureResourceManagerConnection: $(ServiceConnectionName)
+          resourceGroupName: $(ResourceGroupName)
+          location: $(deploymentDefaultLocation)
+          deploymentMode: Incremental
+          csmFile: $(bicepFile)
+          csmParametersFile: $(parametersFile)
