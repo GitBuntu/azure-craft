@@ -58,6 +58,7 @@ stages:
           location: '$(deploymentDefaultLocation)'
           deploymentMode: 'Validation'
           resourceGroupName: $(ResourceGroupName)
+          csmFile: $(bicepFile)
           csmParametersFile: $(parametersFile)
 
 - stage: Deploy
