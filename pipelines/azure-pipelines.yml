@@ -30,10 +30,16 @@ stages:
           echo "Generating parameters file from bicepparam..."
           az bicep build-params --file $(System.DefaultWorkingDirectory)/environments/$(environmentName)/$(environmentName).bicepparam --outfile $(parametersFile)
         displayName: 'Generate Parameters File'
-      - script: |
-          echo "Validating ARM Template for Bicep file: $(bicepFile) with parameters: $(parametersFile)"
-          az deployment group validate --resource-group $(ResourceGroupName) --template-file $(bicepFile) --parameters @$(parametersFile)
-        displayName: 'Validate ARM Template'
+
+      - task: AzureCLI@2
+        name: ValidateARMTemplate
+        inputs:
+          azureSubscription: $(ServiceConnectionName)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            echo "Validating ARM Template for Bicep file: $(bicepFile) with parameters: $(parametersFile)"
+            az deployment group validate --resource-group $(ResourceGroupName) --template-file $(bicepFile) --parameters @$(parametersFile)
       - script: |
           echo "Validation completed successfully."
         displayName: 'Validation Success Message'
