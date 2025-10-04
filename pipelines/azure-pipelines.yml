@@ -103,7 +103,6 @@ stages:
                 scriptLocation: inlineScript
                 inlineScript: |
                   echo "Validating Key Vault deployment..."
-                  az keyvault show --name "${clientName}-kv-${ResourceGroupName,,}" --resource-group "$ResourceGroupName"
             - task: AzureCLI@2
               name: DeploymentNotification
               displayName: 'Notify Deployment Result'
