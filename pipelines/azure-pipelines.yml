@@ -32,7 +32,7 @@ stages:
         displayName: 'Generate Parameters File'
       - script: |
           echo "Validating ARM Template for Bicep file: $(bicepFile) with parameters: $(parametersFile)"
-          az deployment sub validate --location $(deploymentDefaultLocation) --template-file $(bicepFile) --parameters @$(parametersFile)
+          az deployment group validate --resource-group $(ResourceGroupName) --template-file $(bicepFile) --parameters @$(parametersFile)
         displayName: 'Validate ARM Template'
       - script: |
           echo "Validation completed successfully."
