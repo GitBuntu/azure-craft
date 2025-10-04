@@ -46,26 +46,8 @@ stages:
           echo "If validation failed, check the previous step's output for error details."
         displayName: 'Validation Error Handling'
 
-- stage: RunPreflightValidations
-  dependsOn: Validate
-  jobs:
-  - job: PreflightValidations
-    displayName: 'Run Preflight Validations'
-    steps:
-      - task: AzureResourceManagerTemplateDeployment@3
-        name: RunPreflightValidations
-        displayName: 'Run Preflight Validations'
-        inputs:
-          connectedServiceName: $(ServiceConnectionName)
-          location: '$(deploymentDefaultLocation)'
-          deploymentMode: 'Validation'
-          resourceGroupName: $(ResourceGroupName)
-          csmFile: $(bicepFile)
-          csmParametersFile: $(parametersFile)
-        # Note: Ensure secrets are referenced from Key Vault, not stored in parameters
-
 - stage: Preview
-  dependsOn: RunPreflightValidations
+  dependsOn: Validate
   jobs:
     - job: PreviewAzureChanges
       displayName: 'Preview Azure Changes'
@@ -90,7 +72,7 @@ stages:
           displayName: 'What-if Analysis Error Handling'
 
 - stage: Deploy
-  dependsOn: RunPreflightValidations
+  dependsOn: Preview
   jobs:
   - deployment: DeployInfrastructure
     displayName: 'Deploy Infrastructure'
