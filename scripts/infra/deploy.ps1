@@ -15,7 +15,7 @@ param (
 
 $timestamp = Get-Date -Format 'yyyyMMddHHmmss'
 $deploymentName = "$Resource-$timestamp"
-$resourceGroup = "cgk-rg-$Resource-$Environment-$Location"
+$resourceGroup = "rg-vm-prod-canadacentral-001"
 $templateFile = "$PSScriptRoot/../../environments/$Environment/$Environment.bicep"
 $parametersFile = "$PSScriptRoot/../../environments/$Environment/$Environment.parameters.json"
 

@@ -51,6 +51,7 @@ stages:
           connectedServiceName: $(ServiceConnectionName)
           location: '$(deploymentDefaultLocation)'
           deploymentMode: 'Validation'
+          resourceGroupName: $(ResourceGroupName)
           csmParametersFile: $(parametersFile)
 
 - stage: Deploy
