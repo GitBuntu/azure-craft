@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus"
+    },
+    "clientName": {
+      "value": "alien"
+    },
+    "slotsConfig": {
+      "value": {}
+    },
+    "storageConfig": {
+      "value": {}
+    },
+    "kvConfig": {
+      "value": {
+        "objectId": "06fec986-a2d5-4b17-92f1-5197146c9f29",
+        "keysPermissions": [
+          "list"
+        ],
+        "secretsPermissions": [
+          "get",
+          "set",
+          "list"
+        ],
+        "skuName": "standard",
+        "enabledForDeployment": false,
+        "enabledForDiskEncryption": false,
+        "enabledForTemplateDeployment": false
+      }
+    },
+    "tags": {
+      "value": {
+        "Compliance": "ISO27001",
+        "CostCenter": "FIN-Azure-Learning",
+        "DataSensitivity": "Low",
+        "Environment": "Production",
+        "Location": "eastus",
+        "Owner": "Azure Learning Team",
+        "Project": "Azure-Learning"
+      }
+    }
+  }
+}
