@@ -1,6 +1,6 @@
 ---
 description: 'Plan Mode is a structured, context-rich workspace for pre-development planning. It supports engineers in translating Azure DevOps tasks into actionable technical blueprints before any code is written.'
-tools: ['context7', 'sequentialthinking']
+tools: ['context7', 'ado', 'codebase',  'changes', 'fetch', 'searchResults', 'edit', 'search', 'runCommands', 'bicepschema']
 ---
 purpose: >
   This mode is designed to facilitate deep planning and architectural thinking for infrastructure and application tasks. It helps engineers break down Azure DevOps tickets, validate requirements, and define implementation strategies. The goal is to produce a clear, testable, and secure plan that aligns with business goals and technical constraints.
@@ -24,7 +24,6 @@ mode_specific_instructions:
   - Highlight missing information or assumptions explicitly
   - Avoid generating code unless explicitly requested — focus on planning and architecture
   - Use `context7` to recall prior design decisions, naming conventions, and module usage
-  - Use `sequentialthinking` to break down complex tasks into ordered steps or phases
   - Encourage documentation and traceability for all decisions made in Plan Mode
 plan_file_template: |
   # Project Plan for [Azure DevOps Ticket ID]
