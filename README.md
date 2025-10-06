@@ -90,3 +90,24 @@ This repository contains Azure Infrastructure as Code (IaC) templates following 
 - State management
 
 Each deployment script in this repository implements these principles to ensure secure, maintainable, and production-ready infrastructure.
+
+Azure CLI conceptual article list
+https://learn.microsoft.com/en-us/cli/azure/reference-docs-index?view=azure-cli-latest
+
+# MCP DevOps Toolset
+
+This repo launches MCP servers for DevOps demos and Azure workflows.
+
+## Usage
+
+1. Open in VS Code
+2. Run the task: `Launch MCP Servers`
+3. Provide inputs when prompted (e.g. Azure DevOps org name)
+
+## Servers
+
+- Sequential Thinking
+- Memory
+- Context7
+- AzureMCP
+- Azure DevOps MCP
