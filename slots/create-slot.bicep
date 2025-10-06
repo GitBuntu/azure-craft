@@ -23,7 +23,7 @@ param environmentTag string = 'Development'
 param locationTag string = 'Canada Central'
 
 @description('Required tag for Owner')
-param ownerTag string = 'christophergovenderkubiec@gmail.com'
+param ownerTag string = '[email]'
 
 @description('Required tag for Project')
 param projectTag string = 'Azure-Learning'
